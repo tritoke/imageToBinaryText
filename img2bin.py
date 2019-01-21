@@ -2,6 +2,8 @@
 from PIL import Image
 import numpy as np
 
+Image.MAX_IMAGE_PIXELS = 30000 * 11000
+
 RED_COMP = 0
 GREEN_COMP = 1
 BLUE_COMP = 2
@@ -28,7 +30,7 @@ while True:
         pixels = np.asarray(Image.open("./images/"+name), dtype='<i4')[:,:,:3]
         image_shape = pixels.shape
         break
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
         print(f"Couldn't find file {name}")
 
 modify = input("Do you want to modify the image in any way? [Y/n]")
@@ -101,4 +103,6 @@ print(out.shape)
 final_image = Image.fromarray(out)
 final_image.save("./mods/mod_" + name)
 final_image.show()
+
+open("binary.txt", "w").write(",\n".join([",".join([f"({x[0]:d},{x[1]:d},{x[2]:d})" for x in j]) for j in out]))
 
